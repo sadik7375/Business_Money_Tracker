@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../component/Navbar';
 import Sidebar from '../component/Sidebar';
 
 const AddMember = () => {
+
+   const [name,setname]=useState();
+   const [phonenumber,setPhonenumber]=useState();
+   const [additional,setAdditional]=useState();
+   const [date,setData]=useState();
+   
+   const addmember=()=>{
+
+
+   }
+
+
     return (
+
+      
          
         <div>
             <Navbar></Navbar>

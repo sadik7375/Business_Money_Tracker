@@ -1,25 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Navigate } from 'react-router-dom';
 
 const Login = () => {
+
+
+ const [email,setemail]=useState();
+ const [password,setpassword]=useState();
+
+ const handleSubmit=(e)=>
+
+
+ {
+  e.preventDefault();
+   axios.post("http://localhost:8000/login",{email,password})
+   .then(result=>{console.log(result)
+    console.log("login succes")
+    Navigate('/home')
+      
+   })
+   .catch(err=>{
+    console.log(err);
+    
+   })
+ }
+
+
     return (
         <div className="flex flex-col md:flex-row items-center justify-center md:h-screen mx-auto">
-        {/* <a
-          href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-        >
-          <img
-            className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
-          Flowbite
-        </a> */}
+      
         <div className="w-full md:w-1/2 bg-white md:rounded-lg md:shadow dark:border md:mt-0  sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-8 sm:p-8 shadow-orange-50 bg-[#6075e2]">
             <h1 className="text-xl  font-bold leading-tight tracking-tight mt-1 pt-1 text-gray-900 md:text-2xl dark:text-white">
               Log in
             </h1>
-            <form className="space-y-3 md:space-y-1" action="#">
+            <form onSubmit={handleSubmit} className="space-y-3 md:space-y-1" action="#">
             
               <div>
                 <label
@@ -34,6 +49,7 @@ const Login = () => {
                   className="bg-gray-50 border border-gray-300 text-black-900 sm:text-sm rounded-lg  focus:border-primary-600 block w-full p-2 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text- dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="mail@gmail.com"
                   required=""
+                  onChange={(e)=>{setemail(e.target.value)}}
                 />
               </div>
              
@@ -48,8 +64,9 @@ const Login = () => {
                   type="password"
                  
                   placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2  dark:text-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2  dark:text-black dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required=""
+                  onChange={(e)=>setpassword(e.target.value)}
                 />
               </div>
               <div className="mt-3 flex justify-between items-center ">

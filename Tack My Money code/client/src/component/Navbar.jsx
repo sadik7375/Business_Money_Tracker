@@ -26,7 +26,7 @@ const Navbar = () => {
         </div>
     </div>
                 {/* Your circular profile image */}
-                <div className="rounded-full overflow-hidden h-8 w-8">
+                {/* <div className="rounded-full overflow-hidden h-8 w-8">
                     <a href="" >
                         <img
                             src={sadikImage} // Use the imported image
@@ -34,7 +34,7 @@ const Navbar = () => {
                             className="h-full w-full object-cover"
                         />
                     </a>
-                </div>
+                </div> */}
             </div>
         </nav>
     );
