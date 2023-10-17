@@ -5,18 +5,18 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 const Expense = () => {
     const [description,setDescription]=useState();
-    const [expenseAmount,setexpenseAmount]=useState();
+    const [expense,setexpense]=useState();
     const [date,setDate]=useState();
     const navigate = useNavigate();
 
     const handleSubmit=(e)=>{
       e.preventDefault();
    
-      axios.post('http://localhost:8000/addexpense',{description,expenseAmount,date})
+      axios.post('http://localhost:8000/addexpense',{description,expense,date})
       .then(result=>{
         console.log(result);
         console.log(description)
-        console.log(expenseAmount)
+        console.log(expense)
         console.log(date)
         
       //   setDescription('');
@@ -77,7 +77,7 @@ const Expense = () => {
             className="w-64 px-3 py-2 mb-1 border-2 border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
             placeholder="Expense"
             type="text"
-            onChange={(e)=>setexpenseAmount(e.target.value)}
+            onChange={(e)=>setexpense(e.target.value)}
           />
         </div>
         <div className="mb-3 -mx-2 flex items-end">

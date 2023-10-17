@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import AddMember from './pages/AddMember';
 import PaymentInfo from './pages/PaymentInfo';
 import Expense from './pages/Expense';
-import LogOut from './pages/LogOut';
+// import LogOut from './pages/LogOut';
 import AddFee from './pages/AddFee';
 
 
@@ -28,7 +28,7 @@ function App() {
       <Route path="/paymentinfo" element={<PaymentInfo></PaymentInfo>}/>
       <Route path="/addfee" element={<AddFee></AddFee>}/>
       <Route path="/expense" element={<Expense></Expense>}/>
-      <Route path="/logout" element={<LogOut></LogOut>}/>
+      {/* <Route path="/logout" element={<LogOut></LogOut>}/> */}
       
       </Routes>    
     
