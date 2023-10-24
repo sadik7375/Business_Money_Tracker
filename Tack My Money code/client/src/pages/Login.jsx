@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Login = ({authencated,onLogin}) => {
+const Login = () => {
 
   const navigate = useNavigate();
  const [email,setemail]=useState();
@@ -14,10 +14,10 @@ axios.defaults.withCredentials=true;
   axios
   .post("http://localhost:8000/login", { email, password })
   .then((response) => {
-     
+ 
     if (response) {
-     console.log(response);
-     onLogin();
+    
+      // localStorage.setItem('jwtToken', token);
       navigate('/');
       console.log("login ok");
     }
