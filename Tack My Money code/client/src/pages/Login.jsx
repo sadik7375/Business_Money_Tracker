@@ -14,11 +14,12 @@ const Login = () => {
   axios
     .post("http://localhost:8000/login", { email, password })
     .then((response) => {
-      const token = response.data.token; // Assuming the server returns a 'token' field
-      if (token) {
+      // const token = response.data.token; // Assuming the server returns a 'token' field
+      if (response) {
         // Store the token in a secure manner (e.g., localStorage, cookies, or a state management library)
-        localStorage.setItem('jwtToken', token);
+        // localStorage.setItem('jwtToken', token);
         navigate('/');
+        console.log("login ok");
       }
     })
     .catch((error) => {

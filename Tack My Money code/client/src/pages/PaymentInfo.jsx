@@ -1,11 +1,17 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../component/Sidebar';
 import Navbar from '../component/Navbar';
+import { AiFillDelete } from 'react-icons/ai';
+import { GrUpdate } from 'react-icons/gr';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+const itemsPerPage = 10; // Number of items to display per page
 
 const PaymentInfo = () => {
   const [usersinfo, setUsersinfo] = useState([]);
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     axios.get("http://localhost:8000/addfee")
@@ -16,9 +22,63 @@ const PaymentInfo = () => {
       .catch(err => console.log(err));
   }, []);
 
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(usersinfo.length / itemsPerPage);
+
+  // Get the items for the current page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = usersinfo.slice(startIndex, endIndex);
+
+const handleDelete=(id)=>{
+
+  console.log(id);
+  axios.delete(`http://localhost:8000/deletememberinfo/${id}`)
+  .then(res=>{
+    window.location.reload();
+    console.log(res);
+  })
+  .catch(err=>console.log(err));
+
+
+
+}
+
+const updateDueStatus = () => {
+  const currentDate = new Date();
+
+  // Update the status for each member in your state
+  const updatedUsersInfo = usersinfo.map((userinfo) => {
+    const dueDate = new Date(userinfo.duedate);
+
+    // Check if the due date has passed
+    if (dueDate < currentDate) {
+      return {
+        ...userinfo,
+        status: 'Due',
+      };
+    } else {
+      return {
+        ...userinfo,
+        status: 'Paid',
+      };
+    }
+  });
+
+  // Update the state with the new status
+  setUsersinfo(updatedUsersInfo);
+};
+useEffect(() => {
+  updateDueStatus(); // Initial update
+  const intervalId = setInterval(updateDueStatus, 24 * 60 * 60 * 1000); // Update every 24 hours
+
+  return () => {
+    clearInterval(intervalId); // Clean up the interval when the component unmounts
+  };
+}, []);
+
   return (
     <div>
-      <Sidebar></Sidebar>
       <Navbar></Navbar>
 
       <div className="flex justify-center font-bold mt-10 text-indigo-500"><p>MEMBER INFORMATION</p></div>
@@ -53,11 +113,12 @@ const PaymentInfo = () => {
           />
         </div>
       </div>
-      <div className="flex justify-center mt-10 ml-32 ">
+
+      <div className="flex justify-center mt-10 ml-32">
         <table className="w-xs text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-white uppercase bg-indigo dark:bg-indigo-500 dark:text-white">
             <tr>
-              <th scope="col" className="px-2 py-3">
+            <th scope="col" className="px-2 py-3">
                 Name
               </th>
               <th scope="col" className="px-3 py-3">
@@ -76,29 +137,56 @@ const PaymentInfo = () => {
               <th scope="col" className="px-2 py-3">
                 DueDate
               </th>
+              <th scope="col" className="px-2 py-3">
+               Status
+              </th>
               <th scope="col" className="px-1 py-3">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {usersinfo
+            {currentItems
               .filter((userinfo) => {
-                return search === "" || userinfo.phonenumber.toLowerCase().includes(search)   ; //search === "" checks if the search state is empty. If it is, it returns true, which means no filtering is applied, and all items in the array are included.
+                return search === "" || userinfo.phonenumber.toLowerCase().includes(search);
               })
               .map((userinfo) => (
-                <tr key={userinfo.email} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td className="px-1 py-2  text-white whitespace-nowrap dark:text-white">{userinfo.name}</td>
-                  <td className="px-1 py-2  text-white whitespace-nowrap dark:text-white">{userinfo.phonenumber}</td>
-                  <td className="px-1 py-2  text-white whitespace-nowrap dark:text-white">{userinfo.payment}</td>
-                  <td className="px-1 py-2  text-white whitespace-nowrap dark:text-white">{userinfo.additionalpayment}</td>
-                  <td className="px-1 py-2  text-white whitespace-nowrap dark:text-white">{userinfo.paymentdate}</td>
-                  <td className="px-1 py-2  text-white whitespace-nowrap dark:text-white">{userinfo.duedate}</td>
-                  <td><button className="px-1 py-1 bg-gray-600 text-white cursor-pointer">Update</button></td>
+                <tr key={userinfo._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <td className="px-1 py-2 text-white whitespace-nowrap dark:text-white">{userinfo.name}</td>
+                  <td className="px-1 py-2 text-white whitespace-nowrap dark:text-white">{userinfo.phonenumber}</td>
+                  <td className="px-1 py-2 text-white whitespace-nowrap dark:text-white">{userinfo.payment}</td>
+                  <td className="px-1 py-2 text-white whitespace-nowrap dark-text-white">{userinfo.additionalpayment}</td>
+                  <td className="px-1 py-2 text-white whitespace-nowrap dark-text-white">{userinfo.paymentdate}</td>
+                  <td className="px-1 py-2 text-white whitespace-nowrap dark-text-white">{userinfo.duedate}</td>
+                  <td className="px-1 py-2 text-white whitespace-nowrap dark:text-white bg-green-600">{userinfo.status}  </td>
+                  <td className='flex justify-between bg-white'>
+                    <button onClick={(e)=>handleDelete(userinfo._id)} className="px-1 py-1 pb-1 bg-red-500 rounded-lg text-white cursor-pointer text-sm">
+                      <AiFillDelete/>
+                    </button>
+                    <Link to={`/updateinfo/${userinfo._id}`}  className="px-1 py-1 pb-1 bg-green-600 rounded-lg text-sm cursor-pointer text-white ">
+                      <GrUpdate/>
+                    </Link>
+                  </td>
                 </tr>
               ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-4">
+        <div className="flex space-x-2">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+                 
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`px-3 py-1 cursor-pointer rounded-full ${currentPage === index + 1 ? 'bg-indigo-500 text-white' : 'text-indigo-500 hover:bg-indigo-100'}`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

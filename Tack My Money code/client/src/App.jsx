@@ -9,6 +9,8 @@ import PaymentInfo from './pages/PaymentInfo';
 import Expense from './pages/Expense';
 // import LogOut from './pages/LogOut';
 import AddFee from './pages/AddFee';
+import Infoupdate from './pages/Infoupdate';
+
 
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
       <Route path="/paymentinfo" element={<PaymentInfo></PaymentInfo>}/>
       <Route path="/addfee" element={<AddFee></AddFee>}/>
       <Route path="/expense" element={<Expense></Expense>}/>
+      <Route path="/updateinfo/:id" element={<Infoupdate></Infoupdate>}/>
       {/* <Route path="/logout" element={<LogOut></LogOut>}/> */}
       
       </Routes>    

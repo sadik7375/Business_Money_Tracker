@@ -42,7 +42,7 @@ const Charts = () => {
 
 // Function to format the date to "MMMM" 
 const formatDateToMonth = (date) => {
-  const options = { month: 'long' };
+  const options = { month: 'short' };
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
@@ -50,7 +50,7 @@ const formatDateToMonth = (date) => {
 const combinedData = [
   ...feeData.map((fee) => ({
     Month: formatDateToMonth(new Date(fee.paymentdate)),
-    Income: parseFloat(fee.payment),
+    Income: parseFloat(fee.payment)+parseFloat(fee.additionalpayment),
     Expense: 0,
   })),
   ...expenseData.map((expense) => ({
@@ -58,17 +58,20 @@ const combinedData = [
     Income: 0,
     Expense: parseFloat(expense.expense),
   })),
-];
+];  //create each object for month,income other object month expense [{month,income},{month,expense}]
+console.log(combinedData);
 
 // Group data by Month and sum the Income and Expense for the same Month
 const groupedData = combinedData.reduce((acc, dataPoint) => {
   const existingData = acc.find((item) => item.Month === dataPoint.Month);
+//intally acc no object datapoint is first index so acc.push(first index) then after one iteration acc get first object index o of arr then datapoint is next object.
+//existingdata is object  if match prevobject month other object month then add new object existing data
 
   if (existingData) {
     existingData.Income += dataPoint.Income;
     existingData.Expense += dataPoint.Expense;
   } else {
-    acc.push(dataPoint);
+    acc.push(dataPoint); //all complete jan month then go to next month
   }
 
   return acc;

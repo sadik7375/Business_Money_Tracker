@@ -84,7 +84,7 @@ const Sidebar = () => {
              <FaMoneyBillAlt/>
             </span>
             <span className="ml-2 text-sm tracking-wide truncate">
-            <Link  className="relative flex flex-row items-center h-11 no-underline 	text-decoration-line:none focus:outline-none hover:bg-gray-50 text-white hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6" to="/addfee">Add Fee</Link> 
+            <Link  className="relative flex flex-row items-center h-11 no-underline 	text-decoration-line:none focus:outline-none hover:bg-gray-50 text-white hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6" to="/addfee">Add Payment</Link> 
             </span>
           </a>
         </li>

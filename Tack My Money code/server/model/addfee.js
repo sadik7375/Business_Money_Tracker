@@ -29,7 +29,14 @@ const feeSchema = new mongoose.Schema({
     duedate: {
         type: Date,
 
+    },
+    status: {
+        type: String,
+        default: 'Paid',
+
+
     }
+
 
 
 

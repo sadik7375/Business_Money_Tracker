@@ -4,6 +4,8 @@ const feeModel = require('./model/addfee')
 const expenseModel = require('./model/expense')
 const jwt = require('jsonwebtoken');
 const env = require('dotenv').config();
+// const cron = require('node-cron');
+
 
 // process.env
 
@@ -29,6 +31,56 @@ const bcrypt = require('bcrypt');
 
 
 // }
+
+
+
+
+
+
+//Delete memberinfo
+
+app.delete('/deletememberinfo/:id', (req, res) => {
+    const id = req.params.id;
+    feeModel.findByIdAndDelete(id)
+        .then(deletememberinfo => {
+            if (deletememberinfo) {
+                return res.status(200).json({ message: "user not found" });
+            }
+
+        })
+        .catch(err => {
+            res.status(500).json({ error: "Failed to delete " });
+        })
+
+});
+
+//update memberinfomation
+
+app.put('/updatememberinfo/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    feeModel.findByIdAndUpdate({ _id: id }, { name: req.body.name, phonenumber: req.body.phonenumber, payment: req.body.payment, additionalpayment: req.body.additionalpayment, paymentdate: req.body.paymentdate, duedate: req.body.duedate })
+        .then((updatememberinfo) => {
+            res.status(200).json(updatememberinfo)
+
+
+        })
+        .catch(err => {
+            res.status(500).json({ error: "failed to update use" });
+        });
+
+});
+
+app.get('/getmember/:id', (req, res) => {
+    const id = req.params.id;
+    feeModel.findById({ _id: id })
+        .then(users => res.json(users))
+        .catch(err => res.json(err))
+})
+
+
+
 
 
 //fee charts data api
@@ -100,21 +152,13 @@ app.post("/login", (req, res) => {
             if (!user) {
                 res.status(404).json({ error: "User not found" });
             } else {
-                // Compare the hashed password using bcrypt (you need to add bcrypt to your project)
-
-
                 bcrypt.compare(password, user.password, (err, result) => {
                     if (err) {
-                        res.status(500).json({ error: "Internal Server Error1" });
+                        console.error(err); // Log the error
+                        res.status(500).json({ error: "Internal Server Error: " + err.message });
                     } else if (result) {
-
-                        //generate jwt token
-
-                        // const token = jwt.sign({ userId: user._id, email: user.email }, 'sadikwahid', {
-                        //     expiresIn: '1h' // Set the token expiration time (e.g., 1 hour)
-                        // });
-
-                        res.json({ token: "ok login" });
+                        // Generate and return a JWT token
+                        res.json({ result: "login ok" });
                     } else {
                         res.status(401).json({ error: "Password is incorrect" });
                     }
@@ -122,10 +166,11 @@ app.post("/login", (req, res) => {
             }
         })
         .catch(err => {
-            console.log(err);
-            res.status(500).json({ error: "Internal Server Error" });
+            console.error(err); // Log the error
+            res.status(500).json({ error: "Internal Server Error: " + err.message });
         });
 });
+
 
 
 //////////////////////////////////////////////////////////////
@@ -178,9 +223,17 @@ app.post("/login", (req, res) => {
 
 app.post('/addfee', (req, res) => {
 
-    const { name, phonenumber, payment, additionalpayment, paymentdate, duedate } = req.body;
-    const parsedpaymentdate = new Date(paymentdate);
-    const parsedduedate = new Date(duedate);
+
+    const formatDateToMonth = (date) => {
+
+        return new Intl.DateTimeFormat('en-US', 'id').format(date);
+    };
+
+
+
+    const { name, phonenumber, payment, additionalpayment, paymentdate, duedate, status } = req.body;
+    const parsedpaymentdate = formatDateToMonth(new Date(paymentdate));
+    const parsedduedate = formatDateToMonth(new Date(duedate));
     const addfee = new feeModel({
         name: name,
         phonenumber: phonenumber,
@@ -188,6 +241,7 @@ app.post('/addfee', (req, res) => {
         additionalpayment: additionalpayment,
         paymentdate: parsedpaymentdate,
         duedate: parsedduedate,
+        stattus: 'Paid'
 
 
 
@@ -206,6 +260,7 @@ app.post('/addfee', (req, res) => {
             res.status(500).json({ err: 'internal server error' });
         });
 });
+
 
 //add expense
 app.post('/addexpense', (req, res) => {
