@@ -2,30 +2,31 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({authencated,onLogin}) => {
 
   const navigate = useNavigate();
  const [email,setemail]=useState();
  const [password,setpassword]=useState();
-
+axios.defaults.withCredentials=true;
  const handleSubmit = (e) => {
   e.preventDefault();
 
   axios
-    .post("http://localhost:8000/login", { email, password })
-    .then((response) => {
-      // const token = response.data.token; // Assuming the server returns a 'token' field
-      if (response) {
-        // Store the token in a secure manner (e.g., localStorage, cookies, or a state management library)
-        // localStorage.setItem('jwtToken', token);
-        navigate('/');
-        console.log("login ok");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  .post("http://localhost:8000/login", { email, password })
+  .then((response) => {
+     
+    if (response) {
+     console.log(response);
+     onLogin();
+      navigate('/');
+      console.log("login ok");
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 };
+
 
 
 

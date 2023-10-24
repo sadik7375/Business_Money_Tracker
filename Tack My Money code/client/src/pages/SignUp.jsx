@@ -15,7 +15,7 @@ const SignUp = () => {
   axios.post('http://localhost:8000/signup',{name,email,password,phonenumber})
   .then(result=>{
     console.log(result);
-    navigate('/login');
+    // navigate('/login');
 
   })
  

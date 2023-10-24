@@ -4,6 +4,9 @@ const feeModel = require('./model/addfee')
 const expenseModel = require('./model/expense')
 const jwt = require('jsonwebtoken');
 const env = require('dotenv').config();
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const router = express.Router();
 // const cron = require('node-cron');
 
 
@@ -14,8 +17,23 @@ const port = 8000;
 
 const app = express(); //express() is a function that comes from the Express.js framework. When you call this function, it creates an instance of an Express application, which is essentially a web server that you can configure to handle HTTP requests and responses
 
-app.use(cors()); //enbale cors
+app.use(cors({
+
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+})); //enbale cors
+
 app.use(express.json());
+app.use(cookieParser());
+
+
+
+
+
+
+
+
 
 const db = require('./databaseconnect/dbconnection');
 
@@ -31,6 +49,46 @@ const bcrypt = require('bcrypt');
 
 
 // }
+
+//authencation
+
+const requireAuth = (req, res, next) => {
+
+    const token = req.cookies.token;
+
+    if (token) {
+        jwt.verify(token, "jwt-secret-key", (err, decodedToken) => {
+
+            if (err) {
+                console.log(err.message);
+                res.redirect('/login');
+
+            } else {
+                next();
+
+
+            }
+
+        })
+
+    } else {
+        res.redirect('/login');
+
+    }
+
+
+
+
+}
+
+
+router.use(requireAuth);
+
+router.get('/', (req, res) => {
+    res.json({ message: 'router protected' });
+});
+
+
 
 
 
@@ -149,20 +207,35 @@ app.post("/login", (req, res) => {
     const { email, password } = req.body;
     signupModel.findOne({ email: email })
         .then(user => {
-            if (!user) {
-                res.status(404).json({ error: "User not found" });
-            } else {
+            if (user) {
                 bcrypt.compare(password, user.password, (err, result) => {
                     if (err) {
                         console.error(err); // Log the error
                         res.status(500).json({ error: "Internal Server Error: " + err.message });
                     } else if (result) {
-                        // Generate and return a JWT token
+                        // Generate and set a JWT token as a cookie
+
+                        const token = jwt.sign({ email: user.email }, "jwt-secret-key", { expiresIn: "1d" });
+
+                        res.cookie("token", token, {
+                            secure: true, // Set to true for HTTPS
+                            httpOnly: true, // Ensure that the cookie is accessible only from the server
+                            expires: new Date(Date.now() + 24 * 3600000), // 1 day
+                            // path: '/', // Specify a path if needed
+                            // domain: '', // Specify a domain if needed
+                        });
+
+
+
                         res.json({ result: "login ok" });
                     } else {
                         res.status(401).json({ error: "Password is incorrect" });
                     }
                 });
+
+            } else {
+                res.status(404).json({ error: "User not found" });
+
             }
         })
         .catch(err => {
@@ -170,7 +243,6 @@ app.post("/login", (req, res) => {
             res.status(500).json({ error: "Internal Server Error: " + err.message });
         });
 });
-
 
 
 //////////////////////////////////////////////////////////////
