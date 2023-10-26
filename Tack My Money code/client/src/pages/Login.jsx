@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FcGoogle } from "react-icons/fc";
 
-const Login = () => {
+
+const Login = ({authencated,onLogin}) => {
 
   const navigate = useNavigate();
  const [email,setemail]=useState();
@@ -14,10 +16,10 @@ axios.defaults.withCredentials=true;
   axios
   .post("http://localhost:8000/login", { email, password })
   .then((response) => {
- 
+     
     if (response) {
-    
-      // localStorage.setItem('jwtToken', token);
+     console.log(response);
+     onLogin();
       navigate('/');
       console.log("login ok");
     }
@@ -91,7 +93,14 @@ axios.defaults.withCredentials=true;
               </button>
               </div>
               <p className="text-white flex justify-center">------------OR------------</p>
-          <span ><a className="text-white  flex justify-center" href="">Google icon</a></span>
+             <div className="text-black flex justify-center  gap-2  bg-white cursor-pointer w-50 pt-2 px-10 font-bold-medium text-black hover:bg-indigo-500 hover:text-white focus:ring-4 md:mx-3 focus:outline-none focus:ring-primary-300 font-sm rounded-lg text-sm px-2 py-2 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">
+               
+                <span  className=' text-[2rem] mt-2  '><FcGoogle/></span>
+                <p >login with google </p>
+
+             </div>
+
+          
     
             
     

@@ -16,7 +16,7 @@ const  Infoupdate = () => {
   const [paymentdate,setPayDate]=useState();
   const [duedate,setDueDate]=useState();
 
-  
+  //member info get by api 
   useEffect(() => {
     axios.get('http://localhost:8000/getmember/'+id)
       .then(result => {

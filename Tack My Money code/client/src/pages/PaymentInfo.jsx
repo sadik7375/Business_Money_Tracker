@@ -13,6 +13,8 @@ const PaymentInfo = () => {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
+  //when app com. render the useeffect call..when you add fee this useeffect call automatically
+  //addfee occurs sideeffect
   useEffect(() => {
     axios.get("http://localhost:8000/addfee")
       .then(result => {
@@ -146,7 +148,8 @@ useEffect(() => {
             </tr>
           </thead>
           <tbody>
-            {currentItems
+            
+            {currentItems //method chain .filter().map()
               .filter((userinfo) => {
                 return search === "" || userinfo.phonenumber.toLowerCase().includes(search);
               })

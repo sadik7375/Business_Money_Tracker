@@ -91,7 +91,7 @@ const Overview = () => {
             {/* Card 2: Total Income */}
             <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md mb-4">
                 <div className="text-gray-700 dark:text-white font-semibold">Due Income</div>
-                <div className="text-3xl text-gray-900 dark:text-white">$5,000</div>
+                <div className="text-3xl text-gray-900 dark:text-white">5,000<span className="text-lg ml-1">TK</span></div>
             </div>
 
             {/* Card 3: Add more cards here */}
